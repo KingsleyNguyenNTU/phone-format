@@ -1,0 +1,35 @@
+<div class="container">
+  <h1>Format Phone Number By Region</h1>
+  <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm">
+    <div class="form-group">
+      <label for="region">Region</label>
+      <select class="form-control"  id="region"
+              required
+              (ngModelChange)="resetPhoneNumber()"
+              [(ngModel)]="regionService.selectedRegionIndex" name="region">
+        <option *ngFor="let countryCode of regionService.regionCountryCodeLists; let i = index" [value]="i">{{countryCode}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number</label>
+      <input type="text" class="form-control" id="phoneNumber"
+             #phoneNumber="ngModel"
+             required
+             phoneFormatByRegion
+             [(ngModel)]="rawPhoneNumber" name="phoneNumber">
+      <div *ngIf="!phoneNumber.pristine && phoneNumber.invalid" class="alert alert-danger">
+        <div class="alert-required-phone" *ngIf="phoneNumber.errors.required">Phone number is required</div>
+        <div class="alert-invalid-phone" *ngIf="phoneNumber.errors.invalidPhoneNumber">Phone number is invalid</div>
+      </div>
+    </div>
+
+    <h3 id="formattedPhoneNumber" *ngIf="!f.form.pristine && f.form.valid">Formatted phone number: {{rawPhoneNumber | formatPhone}}</h3>
+
+    <button type="submit" class="btn btn-success" [disabled]="!f.form.valid">Generate</button>
+  </form>
+
+  <h3 class="mt-3">
+    <a class="badge badge-success p-2" *ngIf="shouldDisplayPhoneLink && !phoneNumber.invalid" href="tel:{{rawPhoneNumber | formatPhone}}">Click to call</a>
+  </h3>
+</div>
